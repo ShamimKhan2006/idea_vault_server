@@ -100,20 +100,22 @@ async function run() {
         await res.send(result)
      })
 
-    // app.patch("/profileEdit/:id",async(req,res)=>{
-    //   const {id}=req.params
-    //   const updateData=req.body
-    //   console.log("---",updateData)
-    //   console.log("id",id)
-    
-    //   const result=await registerCollection.updateOne({
-    //     _id:new ObjectId(id)
-    //   },{$set:updateData})
-    //   await res.send(result)
-    //   console.log("matchedCount:", result.matchedCount);
-    // })
+    app.patch("/edit/:id",async(req,res)=>{
+      const {id}=req.params
+      const update=req.body
+      const result=await idea_vaultCollection.updateOne({_id:new ObjectId(id)},{
+        $set:update
+      })
+        await res.send(result)
 
+     
+    })
 
+   app.delete("/delete/:id",async(req,res)=>{
+    const {id}=req.params
+    const result=await idea_vaultCollection.deleteOne({_id:new ObjectId(id)})
+    await res.send(result)
+   })
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     
