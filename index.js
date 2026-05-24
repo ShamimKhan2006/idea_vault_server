@@ -16,21 +16,22 @@ const JWKS = createRemoteJWKSet(
 const verifyToken= async(req,res,next)=>{
   const authHeaders=req?.headers.authorization
    if(!authHeaders){
-    return res.state(401).json({message:"Unauthorization"})
+    return res.status(401).json({message:"Unauthorization"})
   }
  
   const token=authHeaders.split(" ")[1]
   if(!token){
-    return res.state(401).json({message:"Unauthorization"})
+    return res.status(401).json({message:"Unauthorization"})
   }
 
     const { payload } = await jwtVerify(token, JWKS)
       try {
-        console.log("payload", payload)
+    
+        req.payload=payload
         next()
         
       } catch (error) {
-        return res.state(403).json({message:"Forbidden"})
+        return res.status(403).json({message:"Forbidden"})
       }
  }
 
@@ -55,6 +56,7 @@ async function run() {
      const idea_vaultCollection=db.collection("idea_vault_collection")
      const registerCollection=db.collection("register")
      const limi_ideasColl=db.collection("limit_ideas")
+     const userColl=db.collection("user")
       app.get("/ideas",async(req,res)=>{
   
         const result=await idea_vaultCollection.find().toArray()
@@ -77,11 +79,18 @@ async function run() {
          
      app.post("/Addideas", verifyToken, async(req,res)=>{
         ideas=req.body
-
+        ideas.email=req.payload.email
       const result=await idea_vaultCollection.insertOne(ideas)
       res.json(result)
      } )
      
+
+     app.get("/myidea/", verifyToken, async(req,res)=>{
+      console.log(req.payload)
+      const email=req.payload.email
+      const result=await idea_vaultCollection.find({email}).toArray()
+      res.send(result)
+     })
 
      app.get("/ideas/:id",verifyToken, async (req,res)=>{
 
@@ -90,6 +99,20 @@ async function run() {
       const result=await idea_vaultCollection.findOne(query)
         await res.send(result)
      })
+
+    // app.patch("/profileEdit/:id",async(req,res)=>{
+    //   const {id}=req.params
+    //   const updateData=req.body
+    //   console.log("---",updateData)
+    //   console.log("id",id)
+    
+    //   const result=await registerCollection.updateOne({
+    //     _id:new ObjectId(id)
+    //   },{$set:updateData})
+    //   await res.send(result)
+    //   console.log("matchedCount:", result.matchedCount);
+    // })
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
