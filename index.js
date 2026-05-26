@@ -110,6 +110,19 @@ async function run() {
 
      
     })
+app.get("/ideas", async (req, res) => {
+  console.log("Backend received search query:", req.query.search);
+  const search = req.query.search; 
+
+  let query = {};
+  // নিশ্চিত করুন সার্চ ভ্যালু খালি বা 'undefined' স্ট্রিং নয়
+  if (search && search !== "" && search !== "undefined") {
+    query = { ideaTitle: { $regex: search, $options: "i" } };
+  }
+
+  const result = await idea_vaultCollection.find(query).toArray();
+  res.send(result);
+});
 
    app.delete("/delete/:id",async(req,res)=>{
     const {id}=req.params
