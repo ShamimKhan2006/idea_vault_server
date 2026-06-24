@@ -1,4 +1,4 @@
-// const express = require("express");
+ const express = require("express");
 const app = express();
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -17,9 +17,7 @@ app.get("/", (req, res) => {
 });
 
 // ================= JWKS (IMPORTANT: CHANGE FOR PRODUCTION) =================
-const JWKS = createRemoteJWKSet(
-  new URL(process.env.JWKS_URL)
-);
+const JWKS = createRemoteJWKSet(new URL(`${process.env.JWKS_URL}/api/auth/jwks`));
 
 // ================= AUTH MIDDLEWARE =================
 const verifyToken = async (req, res, next) => {
@@ -31,6 +29,7 @@ const verifyToken = async (req, res, next) => {
     }
 
     const token = authHeaders.split(" ")[1];
+    console.log("token",token)
 
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
