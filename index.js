@@ -8,7 +8,18 @@ require("dotenv").config();
 
 const port = process.env.PORT || 8000;
 
-app.use(cors());
+// app.use(cors());
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://idea-vault-client-ifzm.vercel.app",
+    ],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // ================= ROOT =================
@@ -150,13 +161,6 @@ const client = new MongoClient(uri, {
       res.send(result);
     });
 
-//     console.log("MongoDB connected successfully 🚀");
-//   } finally {
-//     // keep connection alive
-//   }
-// }
-
-// run().catch(console.dir);
 
 // ================= LISTEN (DEPLOY FIX IMPORTANT) =================
 app.listen(port, "0.0.0.0", () => {
