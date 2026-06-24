@@ -56,9 +56,9 @@ const client = new MongoClient(uri, {
 });
 
 // ================= MAIN RUN =================
-async function run() {
-  try {
-    await client.connect();
+// async function run() {
+//   try {
+//     await client.connect();
 
     const db = client.db("idea_vault");
 
@@ -150,13 +150,13 @@ async function run() {
       res.send(result);
     });
 
-    console.log("MongoDB connected successfully 🚀");
-  } finally {
-    // keep connection alive
-  }
-}
+//     console.log("MongoDB connected successfully 🚀");
+//   } finally {
+//     // keep connection alive
+//   }
+// }
 
-run().catch(console.dir);
+// run().catch(console.dir);
 
 // ================= LISTEN (DEPLOY FIX IMPORTANT) =================
 app.listen(port, "0.0.0.0", () => {
