@@ -82,13 +82,13 @@ async function run() {
     });
 
     // ================= FEATURED =================
-    // app.get("/featured", async (req, res) => {
-    //   const result = await idea_vaultCollection.find().limit(6).toArray();
-    //   res.send(result);
-    // });
-   app.get("/featured", async (req, res) => {
-  res.send("featured route working");
-});
+    app.get("/featured", async (req, res) => {
+      const result = await idea_vaultCollection.find().limit(6).toArray();
+      res.send(result);
+    });
+//    app.get("/featured", async (req, res) => {
+//   res.send("featured route working");
+// });
 
 
     // ================= REGISTER =================
