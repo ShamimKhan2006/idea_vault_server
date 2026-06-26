@@ -8,18 +8,19 @@ require("dotenv").config();
 
 const port = process.env.PORT || 8000;
 
-// app.use(cors());
+app.use(cors());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://idea-vault-client-ifzm.vercel.app",
-    ],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "https://idea-vault-client-ifzm.vercel.app"],
+//     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // OPTIONS যোগ করুন
+//     allowedHeaders: ["Content-Type", "Authorization"],     // এগুলো যোগ করুন
+//     credentials: true,
+//   })
+// );
+
+// // প্রি-ফ্লাইট রিকোয়েস্ট হ্যান্ডেল করার জন্য
+// app.options('*', cors());
 app.use(express.json());
 
 // ================= ROOT =================
@@ -75,6 +76,7 @@ const client = new MongoClient(uri, {
 
     const idea_vaultCollection = db.collection("idea_vault_collection");
     const registerCollection = db.collection("register");
+    const commentsCollection = db.collection("comments");
 
     // ================= GET IDEAS (SEARCH INCLUDED) =================
     app.get("/ideas", async (req, res) => {
@@ -149,7 +151,18 @@ const client = new MongoClient(uri, {
 
       res.send(result);
     });
+    app.patch("/cmtedit/:id", async (req, res) => {
+      const { id } = req.params;
+      const update = req.body;
 
+      const result = await commentsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: update }
+      );
+
+      res.send(result);
+    });
+    
     // ================= DELETE IDEA =================
     app.delete("/delete/:id", async (req, res) => {
       const { id } = req.params;
@@ -160,8 +173,42 @@ const client = new MongoClient(uri, {
 
       res.send(result);
     });
+    app.delete("/comments/:id", async (req, res) => {
+      const { id } = req.params;
+          console.log("ID:",id);
+      const result = await commentsCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
 
+      res.send(result);
+    });
 
+    app.post("/reviews", async (req, res) => {
+  try {
+    const query = req.body;
+    console.log("Saving to DB:", query); // ডাটা ঠিক আছে কি না চেক করুন
+
+    // নিশ্চিত করুন commentsCollection টি null বা undefined নয়
+    if (!commentsCollection) {
+        throw new Error("Database collection not initialized");
+    }
+
+    const result = await commentsCollection.insertOne(query);
+    console.log("DB Result:", result);
+    
+    res.status(200).send(result);
+  } catch (error) {
+    console.error("CRITICAL ERROR:", error.message);
+    res.status(500).send({ error: error.message });
+  }
+});
+
+app.get("/reviews/:Id",async (req ,res )=>{
+
+  const {Id}=req.params
+  const result=await commentsCollection.find({Id}).toArray()
+  res.send(result)
+})
 // ================= LISTEN (DEPLOY FIX IMPORTANT) =================
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server running on port ${port}`);
