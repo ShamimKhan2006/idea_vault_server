@@ -8,11 +8,11 @@ require("dotenv").config();
 
 const port = process.env.PORT || 8000;
 
-app.use(cors());
+ app.use(cors());
 
 // app.use(
 //   cors({
-//     origin: ["http://localhost:3000", "https://idea-vault-client-ifzm.vercel.app"],
+//     origin: ["http://localhost:3000", "https://client-ten-eta-68.vercel.app"],
 //     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // OPTIONS যোগ করুন
 //     allowedHeaders: ["Content-Type", "Authorization"],     // এগুলো যোগ করুন
 //     credentials: true,
@@ -68,8 +68,8 @@ const client = new MongoClient(uri, {
 });
 
 // ================= MAIN RUN =================
-// async function run() {
-//   try {
+async function run() {
+  try {
 //     await client.connect();
 
     const db = client.db("idea_vault");
@@ -112,7 +112,7 @@ const client = new MongoClient(uri, {
     });
 
     // ================= ADD IDEA =================
-    app.post("/Addideas", verifyToken, async (req, res) => {
+    app.post("/addideas", verifyToken, async (req, res) => {
       const ideas = req.body;
       ideas.email = req.payload.email;
 
@@ -209,6 +209,18 @@ app.get("/reviews/:Id",async (req ,res )=>{
   const result=await commentsCollection.find({Id}).toArray()
   res.send(result)
 })
+  } 
+  catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    
+
+    // await client.db("admin").command({ ping: 1 });
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!",
+    // );
+  } 
+run().catch(console.dir);
 // ================= LISTEN (DEPLOY FIX IMPORTANT) =================
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server running on port ${port}`);
