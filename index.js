@@ -121,8 +121,8 @@ const client = new MongoClient(uri, {
     });
 
     // ================= MY IDEAS =================
-    app.get("/myidea", verifyToken, async (req, res) => {
-      const email = req.payload.email;
+    app.get("/myidea",  async (req, res) => {
+      const email = req.query.email;
 
       const result = await idea_vaultCollection.find({ email }).toArray();
       res.send(result);
