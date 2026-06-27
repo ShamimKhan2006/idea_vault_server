@@ -10,17 +10,7 @@ const port = process.env.PORT || 8000;
 
  app.use(cors());
 
-// app.use(
-//   cors({
-//     origin: ["http://localhost:3000", "https://client-ten-eta-68.vercel.app"],
-//     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // OPTIONS যোগ করুন
-//     allowedHeaders: ["Content-Type", "Authorization"],     // এগুলো যোগ করুন
-//     credentials: true,
-//   })
-// );
-
-// // প্রি-ফ্লাইট রিকোয়েস্ট হ্যান্ডেল করার জন্য
-// app.options('*', cors());
+;
 app.use(express.json());
 
 // ================= ROOT =================
