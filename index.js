@@ -176,7 +176,7 @@ async function run() {
     app.post("/reviews", async (req, res) => {
   try {
     const query = req.body;
-    console.log("Saving to DB:", query); // ডাটা ঠিক আছে কি না চেক করুন
+    console.log("Saving to DB:", query); 
 
     // নিশ্চিত করুন commentsCollection টি null বা undefined নয়
     if (!commentsCollection) {
@@ -205,10 +205,7 @@ app.get("/reviews/:Id",async (req ,res )=>{
       }
     
 
-    // await client.db("admin").command({ ping: 1 });
-    // console.log(
-    //   "Pinged your deployment. You successfully connected to MongoDB!",
-    // );
+    
   } 
 run().catch(console.dir);
 // ================= LISTEN (DEPLOY FIX IMPORTANT) =================
